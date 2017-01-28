@@ -53,6 +53,7 @@ ROOT_URLCONF = 'parkit.urls'
 
 WSGI_APPLICATION = 'parkit.wsgi.application'
 
+TEMPLATE_DIRS = [os.path.join(BASE_DIR, 'templates')]
 
 # Database
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
