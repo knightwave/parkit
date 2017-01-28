@@ -55,6 +55,26 @@ WSGI_APPLICATION = 'parkit.wsgi.application'
 
 TEMPLATE_DIRS = [os.path.join(BASE_DIR, 'templates')]
 
+
+# URL prefix for static files.
+# Example: "http://media.lawrence.com/static/"
+STATIC_URL = '/static/'
+
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, "static"),
+    '/var/www/static/',
+)
+
+MEDIA_ROOT = '/Users/knightwave/parkit/media/'
+
+MEDIAFILES_DIRS = (os.path.join(os.path.dirname(__file__),'media'),)
+
+
+# URL prefix for static files.
+# Example: "http://media.lawrence.com/static/"
+MEDIA_URL = '/media/'
+
+
 # Database
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
 

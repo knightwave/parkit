@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+{% block css %}
+	<link href="/static/css/bootstrap/bootstrap.min.css" rel="stylesheet" type="text/css" />
+	<style type="text/css">
+		input[type="text"], input[type="password"] {
+			height:30px;	
+		}
+
+		.login_form {
+			padding:10px;
+			height:auto;
+			width:800px;
+			background-color:whiteSmoke;
+			border-radius:4px;
+			-webkit-border-radius:4px;
+			border:1px solid rgba(0, 0, 0, 0.05);
+			box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.05);
+			-webkit-box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.05);		
+			margin:0px auto;	
+		}
+
+		.content_form {
+			background-color:#8EB4E3;	
+			padding:auto;
+		}	
+		
+		body{
+			background-color:#8EB4E3;	
+		}
+		
+		.help-inline{
+			color:#b94a48;
+		}
+
+		.messages{
+			padding:10px;
+			height:auto;
+			width:auto;
+			background-color:whiteSmoke;
+			border-radius:4px;
+			-webkit-border-radius:4px;
+			border:1px solid rgba(0, 0, 0, 0.05);
+			box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.05);
+			-webkit-box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.05);		
+			margin:0px auto;		
+		}
+
+		
+	</style>
+{% endblock %}
+{% block app-content %}
+<div class="content_form">
+	<div class="well container">
+		<form id="signup" class="form-horizontal" method="post" action="" enctype="multipart/form-data">
+			{% csrf_token %}
+			<legend>Alumni Registration</legend>
+			{% if messages %}
+				<div class="messages">
+				{% for message in messages %}
+					<div{% if message.tags %} class="control-group {{ message.tags }}"{% endif %}><p class="text-{{ message.tags }}">- {{ message }}<p></div>
+				{% endfor %}
+			{% endif %}    
+			<div class="control-group">
+				<label class="control-label">Name</label>
+				<div class="controls">
+					<div class="input-prepend">
+						<span class="add-on"><i class="icon-user"></i></span>
+						<input type="text" id="name" class="input-xlarge" name="name" placeholder="Name">
+					</div>
+				</div>
+			</div>
+			<div class="control-group">
+	    	<label class="control-label">Username</label>
+				<div class="controls">
+			    <div class="input-prepend">
+						<span class="add-on"><i class="icon-envelope"></i></span>
+						<input type="text" class="input-xlarge" id="username" name="username" placeholder="Username">
+					</div>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label">Password</label>
+				<div class="controls">
+			    <div class="input-prepend">
+						<span class="add-on"><i class="icon-lock"></i></span>
+						<input type="Password" id="password1" class="input-xlarge" name="password1" placeholder="New Password">
+					</div>
+				</div>
+			</div>
+			<div class="control-group">
+		      <label class="control-label">Confirm Password</label>
+				<div class="controls">
+			    <div class="input-prepend">
+						<span class="add-on"><i class="icon-lock"></i></span>
+						<input type="Password" id="password2" class="input-xlarge" name="password2" placeholder="Re-enter Password">
+					</div>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label"></label>
+			      <div class="controls">
+			      	 <button type="submit" class="btn btn-success" >Create My Account</button>
+			      </div>
+			</div>
+	  </form>
+	</div>
+
+
+{% endblock %}
+{% block script %}
+	<script type="text/javascript" src="/static/js/jquery/jquery-1.9.1.js"></script>
+	<script type="text/javascript" src="/static/js/bootstrap/bootstrap.min.js"></script>
+	<script type="text/javascript" src="/static/js/bootstrap/bootstrap.validate.js"></script>
+	<script type="text/javascript">
+	$(document).ready(function(){	
+
+	$("form").validate({
+		rules:{
+			password:"required",
+			password1:"required",
+			password2:"required",
+			username:{
+				required:true,
+			},
+			password1:{
+				required:true,
+				minlength: 8
+			},
+			password2:{
+				required:true,
+				equalTo: "#password1"
+			},
+		},
+		errorClass: "help-inline"
+	});
+
+});	
+	</script>	
+{% endblock %}
+

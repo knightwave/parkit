@@ -1,1 +1,33 @@
-PARK
+<html>
+	<head>
+		{% block head %}
+		{% endblock head %}
+		
+			<link href="/static/css/jquery/jquery-ui.css" rel="stylesheet" type="text/css" />
+			<link href="/static/css/jquery/style.css" rel="stylesheet" type="text/css" />
+			<link href="/static/css/bootstrap/bootstrap.min.css" rel="stylesheet" type="text/css" />
+		{% block css %}
+		{% endblock css %}
+
+	</head>
+	<body>
+ 		<div style="background-color:rgb(30,30,30); border:1px solid black;height:64px; width:auto;">
+ 		   <img style="float:right;" src="/static/images/iitrlogo.png" alt="iitrlogo" height="64px" width="320px">                                   
+    		</div>
+
+		{% block body %}	
+		{% endblock body %}
+		
+		{% block app-content %}
+		{% endblock app-content %}
+	
+		
+			<script type="text/javascript" src="/static/js/jquery/jquery-1.9.1.js"></script>
+			<script type="text/javascript" src="/static/js/jquery/jquery-ui.js"></script>
+	<script type="text/javascript" src="/static/js/bootstrap/bootstrap.min.js"></script>
+		
+		{% block script %}
+	
+		{% endblock script %}
+	</body>
+</html>

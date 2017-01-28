@@ -1,0 +1,229 @@
+{% extends "base.html" %}
+{% block css %}
+	<link href="/static/css/bootstrap/bootstrap.min.css" rel="stylesheet" type="text/css" />
+	<style type="text/css">
+		input[type="text"], input[type="password"] {
+			height:30px;	
+		}
+
+		.login_form {
+			padding:10px;
+			height:auto;
+			width:800px;
+			background-color:whiteSmoke;
+			border-radius:4px;
+			-webkit-border-radius:4px;
+			border:1px solid rgba(0, 0, 0, 0.05);
+			box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.05);
+			-webkit-box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.05);		
+			margin:0px auto;	
+		}
+
+		.content_form {
+			background-color:#8EB4E3;	
+			padding:auto;
+		}	
+		
+		body{
+			background-color:#8EB4E3;	
+		}
+		
+		.help-inline{
+			color:#b94a48;
+		}
+
+		.messages{
+			padding:10px;
+			height:auto;
+			width:auto;
+			background-color:whiteSmoke;
+			border-radius:4px;
+			-webkit-border-radius:4px;
+			border:1px solid rgba(0, 0, 0, 0.05);
+			box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.05);
+			-webkit-box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.05);		
+			margin:0px auto;		
+		}
+
+		
+	</style>
+{% endblock %}
+{% block app-content %}
+<div class="content_form">
+	<div class="well container">
+		<form id="signup" class="form-horizontal" method="post" action="" enctype="multipart/form-data">
+			{% csrf_token %}
+			<legend>Alumni Registration</legend>
+			{% if messages %}
+				<div class="messages">
+				{% for message in messages %}
+					<div{% if message.tags %} class="control-group {{ message.tags }}"{% endif %}><p class="text-{{ message.tags }}">- {{ message }}<p></div>
+				{% endfor %}
+			{% endif %}    
+			<div class="control-group">
+				<label class="control-label">Name</label>
+				<div class="controls">
+					<div class="input-prepend">
+						<span class="add-on"><i class="icon-user"></i></span>
+						<input type="text" id="name" class="input-xlarge" name="name" placeholder="Name">
+					</div>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label">Activation key</label>
+				<div class="controls">
+					<div class="input-prepend">
+						<span class="add-on"><i class="icon-lock"></i></span>
+						<input type="text" id="password" class="input-xlarge" name="password" placeholder="Activation key">
+					</div>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label">Password</label>
+				<div class="controls">
+			    <div class="input-prepend">
+						<span class="add-on"><i class="icon-lock"></i></span>
+						<input type="Password" id="password1" class="input-xlarge" name="password1" placeholder="New Password">
+					</div>
+				</div>
+			</div>
+			<div class="control-group">
+	      <label class="control-label">Confirm Password</label>
+				<div class="controls">
+			    <div class="input-prepend">
+						<span class="add-on"><i class="icon-lock"></i></span>
+						<input type="Password" id="password2" class="input-xlarge" name="password2" placeholder="Re-enter Password">
+					</div>
+				</div>
+			</div>
+			<div class="control-group">
+	      <label class="control-label">Gender</label>
+				<div class="controls">
+					<p>
+						<div id="gender" class="btn-group" data-toggle="buttons-radio">
+              <button type="button" name="male" class="gender-button btn btn-info active">Male</button>
+              <button type="button" name="female" class="gender-button btn btn-info">Female</button>
+            	<input type="hidden" name="gender" value="male" />
+						</div>
+					</p>
+				</div>
+			</div>
+			<div class="control-group">
+	    	<label class="control-label">Year of Graduation</label>
+				<div class="controls">
+			    <div class="input-prepend">
+						<span class="add-on"><i class="icon-search"></i></span>
+						<select name="year_graduation" id="yearpicker"></select>
+					</div>
+				</div>
+			</div>
+			<div class="control-group">
+	    	<label class="control-label">Branch</label>
+				<div class="controls">
+			    <div class="input-prepend">
+						<span class="add-on"><i class="icon-search"></i></span>
+						<select name="branch" id="branch_picker"></select>
+					</div>
+				</div>
+			</div>
+
+			<div class="control-group">
+	    	<label class="control-label">Degree</label>
+				<div class="controls">
+			    <div class="input-prepend">
+						<span class="add-on"><i class="icon-search"></i></span>
+						<select name="degree" id="degree_picker"></select>
+					</div>
+				</div>
+			</div>
+			<div class="control-group">
+	    	<label class="control-label">Username</label>
+				<div class="controls">
+			    <div class="input-prepend">
+						<span class="add-on"><i class="icon-envelope"></i></span>
+						<input type="text" class="input-xlarge" id="username" name="username" placeholder="Username">
+					</div>
+				</div>
+			</div>
+			<div class="control-group">
+	    	<label class="control-label">Email</label>
+				<div class="controls">
+			    <div class="input-prepend input-append">
+						<span class="add-on"><i class="icon-envelope"></i></span>
+						<span class="add-on" id="after_username"></span>
+					</div>
+				</div>
+			</div>
+		
+			<div class="control-group">
+				<label class="control-label"></label>
+	      <div class="controls">
+	      	 <button type="submit" class="btn btn-success" >Create My Account</button>
+	      </div>
+			</div>
+	  </form>
+	</div>
+
+
+{% endblock %}
+{% block script %}
+	<script type="text/javascript" src="/static/js/jquery/jquery-1.9.1.js"></script>
+	<script type="text/javascript" src="/static/js/bootstrap/bootstrap.min.js"></script>
+	<script type="text/javascript" src="/static/js/bootstrap/bootstrap.validate.js"></script>
+	<script type="text/javascript">
+	$(document).ready(function(){	
+		{% for degree in degrees %}
+			$('#degree_picker').append($('<option />').val('{{degree.name}}').html('{{degree.name}}'));
+		{% endfor %}
+		{% for branch in branches %}
+			$('#branch_picker').append($('<option />').val('{{branch.code}}').html('{{branch.name}}'));
+		{% endfor %}
+		for (i = new Date().getFullYear(); i > 1900; i--){
+			$('#yearpicker').append($('<option />').val(i).html(i));
+		}
+
+		$("#after_username").html('USERNAME'+'.'+$("#degree_picker").val().split('.').join('').toLowerCase()+'.'+$("#branch_picker").val().split('.').join('').toLowerCase()+'.'+$("#yearpicker").val()+'@iitr.edu.in');
+		/* Dynamic Username */
+		$("#degree_picker, #branch_picker, #yearpicker, #username").change(function(){
+			$("#after_username").html($("#username").val()+'.'+$("#degree_picker").val().split('.').join('').toLowerCase()+'.'+$("#branch_picker").val().split('.').join('').toLowerCase()+'.'+$("#yearpicker").val()+'@iitr.edu.in');
+		});
+		/*$("#branch_picker").change(function(){
+			$("#after_username").html($("#username").val()+$("#degree_picker").val()+$("#branch_picker").val()+$("#yearpicker").val()+'@iitr.edu.in');
+		});
+		$("#yearpicker").change(function(){
+			$("#after_username").html($("#username").val()+$("#degree_picker").val()+$("#branch_picker").val()+$("#yearpicker").val()+'@iitr.edu.in');
+		});
+		$("#username").change(function(){
+			$("#after_username").html($("#username").val()+$("#degree_picker").val()+$("#branch_picker").val()+$("#yearpicker").val()+'@iitr.edu.in');
+		});*/
+
+	/** GENDER VALUE **/
+	$('.gender-button').click(function(){
+		$('input[name=gender]').val($(this).attr('name'));	
+	});
+
+	$("form").validate({
+		rules:{
+			password:"required",
+			password1:"required",
+			password2:"required",
+			username:{
+				required:true,
+			},
+			password1:{
+				required:true,
+				minlength: 8
+			},
+			password2:{
+				required:true,
+				equalTo: "#password1"
+			},
+			gender:"required"
+		},
+		errorClass: "help-inline"
+	});
+
+});	
+	</script>	
+{% endblock %}
+
