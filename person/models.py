@@ -8,20 +8,14 @@ class Person(models.Model):
 	contactNumber = models.CharField(max_length=20)
 
 
-class LocationMetadata(models.Model):
+class ParkingSpot(models.Model):
 	name = models.CharField(max_length=254)
 	latitude = models.CharField(max_length=20)
 	longitude = models.CharField(max_length=20)
 	address = models.CharField(max_length=254)
-
-
-# Assumption made: Same cost for parking at all times of a day for a given location
-class ParkingSpot(models.Model):
-	cost = models.DecimalField(max_digits=4, decimal_places=2, default=0.0) # per hour
 	maxTime = models.PositiveIntegerField(null=True, default=300) # in minutes
 	minTime = models.PositiveIntegerField(null=True, default=30) # in minutes
-	location = models.ForeignKey(LocationMetadata)
-
+	totalSpots = models.IntegerField(default=10)
 
 class Booking(models.Model):
 	person = models.ForeignKey(User, related_name='bookings')
@@ -29,3 +23,4 @@ class Booking(models.Model):
 	startTime = models.DateTimeField()
 	endTime = models.DateTimeField()
 	isActive = models.BooleanField(default=True)
+	cost = models.DecimalField(max_digits=4, decimal_places=2, default=0.0) # Cost of booking is fetched dynamically

@@ -72,9 +72,9 @@
 			    <input type="hidden" name="jsonLocation" id="jsonLocation" value="{{inputData.jsonLocation}}">
 			    <div id="parkingTime" style="margin-top:60px; height:50px; margin-bottom:20px;">
 				<h4>Duration to park</h4>
-			      <select name="parkingDuation">
+			      <select name="parkingDuration">
 						{% for optionValue, displayText in EXPECTED_DURATIONS %}
-							<option value="{{optionValue}}">{{displayText}}</option>
+							<option value="{{optionValue}}" {% if optionValue|stringformat:"i" == inputData.parkingDuration %}selected{% endif %}>{{displayText}}</option>
 						{% endfor %}
 					</select>
 			    </div>
@@ -155,37 +155,46 @@
 
         infowindow = new google.maps.InfoWindow();
         addMarkers();
-        // var service = new google.maps.places.PlacesService(map);
-        // service.nearbySearch({
-        //   location: givenLocation,
-        //   radius: 500,
-        //   type: ['store']
-        // }, callback);
       }
 
       function addMarkers() {
       	{% for listing in parkingLocations %}
-      		var latlng = new google.maps.LatLng({{listing.lat}}, {{listing.lng}});
-      		var name = "{{listing.address}}";
-      		console.log(name);
-      		addCustomMarker(latlng, name);
+      		var listing = {
+      			'address': "{{listing.address}}",
+      			'latlng': new google.maps.LatLng({{listing.lat}}, {{listing.lng}}),
+      			'lat': "{{listing.lat}}",
+      			'lng': "{{listing.lng}}",
+      			'price_formatted': "{{listing.price_formatted}}",
+      			'price': "{{listing.price}}",
+      			'start': "{{listing.start}}",
+      			'end': "{{listing.end}}",
+      			'distance': "{{listing.distance}}",
+      		};
+      		addCustomMarker(listing);
       	{% endfor %}
       }
 
       function getContentData(place) {
-			var html = '<div><strong>' + place.name + '</strong><br>' +
-                'Place ID: ' + place.place_id + '<br>' +
-                place.formatted_address + '</div>';
+			var html = '<div><strong>' + place.address + '</strong><br><br>' +
+                'Cost - ' + place.price_formatted + '<br>' +
+                'Distance - ' + place.distance + ' feet <br><br>' +
+                '<form action="/person/book/" method="post">' + 
+                "{% csrf_token %}" + 
+                '<input type="hidden" name="parkingLocation" value="' + JSON.stringify(place) + '">' +
+                '<button class="book">Book</button>' + 
+                '</form>' +
+                '</div>';
+            return html;
       }
 
-      function addCustomMarker(latlng, name) {
+      function addCustomMarker(place) {
          var marker = new google.maps.Marker({
           map: map,
-          position: latlng,
+          position: place.latlng,
         });
 
         google.maps.event.addListener(marker, 'click', function() {
-          infowindow.setContent(name);
+          infowindow.setContent(getContentData(place));
           infowindow.open(map, this);
         });
      	

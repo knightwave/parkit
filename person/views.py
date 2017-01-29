@@ -10,6 +10,7 @@ from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, InvalidPage, PageNotAnInteger
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q
+from django.core.serializers.json import DjangoJSONEncoder
 
 
 from models import *
@@ -123,7 +124,7 @@ def loginRequest(request):
 def getData(lat, lng, duration):
 	start = datetime.datetime.utcnow()
 	end = start + relativedelta(minutes=int(duration))
-	url = "http://api.parkwhiz.com/search/?lat={0}&lng={1}&key=62d882d8cfe5680004fa849286b6ce20".format(str(lat), str(lng), start.strftime("%s"), end.strftime("%s"))
+	url = "http://api.parkwhiz.com/search/?lat={0}&lng={1}&key=62d882d8cfe5680004fa849286b6ce20&start={2}&end={3}".format(str(lat), str(lng), start.strftime("%s"), end.strftime("%s"))
 	response = requests.get(url)
 	if response.status_code != 200:
 		return {}
@@ -131,27 +132,60 @@ def getData(lat, lng, duration):
 	listings = json.loads(response.text).get('parking_listings', {})
 	return listings
 
+def isOccupied(location):
+	latitude = location['lat']
+	longitude = location['lng']
+	try:
+		parkingSpot = ParkingSpot.objects.get(latitude=latitude, longitude=longitude)
+	except ParkingSpot.DoesNotExist:
+		parkingSpot = ParkingSpot.objects.create(address=location['address'], latitude=latitude, longitude=longitude)
+
+	startTime = datetime.datetime.fromtimestamp(int(location['start']))
+	endTime = datetime.datetime.fromtimestamp(int(location['end']))
+	currentActiveBookings = Booking.objects.filter(
+		isActive=True,
+		startTime__range=(startTime, endTime),
+		endTime__range=(startTime, endTime),
+		parkingSpot=parkingSpot,
+	)
+	location['remainingSpots'] = parkingSpot.totalSpots - currentBookings.count()
+	if location['remainingSpots']:  # All spots are occupied
+		return False, parkingSpot
+
+	return True, parkingSpot
+
+def checkAndCreateBooking(location):
+	isSpotOccupied, parkingLocation = isOccupied(location)
+	if isSpotOccupied:
+		return
+
+	return Booking.objects.create(
+		parkingSpot=parkingLocation,
+		startTime=location['start'],
+		endTime=location['end'],
+		cost=location['cost'],
+	)
 
 @login_required
 def home(request):
-	persons_count = Person.objects.all().count()
 	showMap = False
 	inputData = {}
 	parkingLocations = {}
 	jsonLocation = None
 	if request.method == "POST":
 		showMap = True
-		parkingDuation = request.POST.get('parkingDuation', None)
+		parkingDuration = request.POST.get('parkingDuration', None)
 		jsonLocation = request.POST.get('jsonLocation', None)
 		location = json.loads(jsonLocation)
 		latitude = location['lat']
 		longitude = location['lng']
 		inputData['latitude'] = latitude
 		inputData['longitude'] = longitude
-		inputData['parkingDuration'] = parkingDuation
+		inputData['parkingDuration'] = parkingDuration
 		inputData['jsonLocation'] = jsonLocation
 		inputData['autoCompletePlace'] = request.POST.get('autoCompletePlace', None)
-		parkingLocations = getData(latitude, longitude, parkingDuation)
+		parkingLocations = getData(latitude, longitude, parkingDuration)
+		parkingLocations = [parkingLocation for parkingLocation in parkingLocations if not isOccupied(parkingLocation)[0]]
 
 	return render_to_response("person/home.html",
 		{
@@ -163,6 +197,18 @@ def home(request):
 		},
 		context_instance=RequestContext(request))
 
+@login_required
+def book(request):
+	if request.method == "POST":
+		jsonLocation = request.POST.get('parkingLocation', None)
+		location = json.loads(jsonLocation)
+		booking = checkAndCreateBooking(location)
+		if not booking:
+			messages.error("There is an active booking already for this duration")
+		else:
+			messages.success("Parking successfully booked at ".format(location['address']))
+
+	return HttpResponseRedirect("/person/profile/")
 
 @login_required
 def profile(request):
@@ -186,11 +232,5 @@ def changePassword(request):
 			messages.error(request, "Please enter your password correctly")
 		return HttpResponseRedirect('')
 	else:
-		try:
-			open('/home/iitrteam/public_html/media/profile/'+str(request.user.username))
-			image=True
-		except IOError as e:
-			image = False
-
-		return render_to_response("person/changePassword.html",{'image':image,},context_instance=RequestContext(request))
+		return render_to_response("person/changePassword.html",{'image':False},context_instance=RequestContext(request))
 
