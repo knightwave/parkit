@@ -1,0 +1,96 @@
+<!Doctype html>
+<head>
+	{% block head %}
+	{% endblock head %}
+
+	<link href="/static/css/jquery/style.css" rel="stylesheet" type="text/css" />
+	<link href="/static/css/jquery/jquery-ui.css" rel="stylesheet" type="text/css" />
+	<link href="/static/css/bootstrap/bootstrap.min.css" rel="stylesheet" type="text/css" />
+	<link href="/static/css/jquery/jquery.fancybox.css" rel="stylesheet" type="text/css" />
+
+
+	<style type="text/css">
+	.well button{
+		margin-top:10px;			
+
+
+	}
+	body{
+		background-color:#8EB4E3;	
+	}
+	.messages{
+		padding:10px;
+		height:auto;
+		width:600px;
+		background-color:whiteSmoke;
+		border-radius:4px;
+		-webkit-border-radius:4px;
+		border:1px solid rgba(0, 0, 0, 0.05);
+		box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.05);
+		-webkit-box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.05);		
+		margin:0px auto;		
+	}
+	.additional{
+		font-size:12px;
+		}	font-style:italic;
+
+
+		</style>
+		{% block css %}
+		{% endblock css %}
+
+		</head>
+		<body>
+		{% block body %}
+
+		{% endblock body %}
+		<div class="well" style="color:lightgray; font-size:20px; background-color:rgb(30,30,30); border:1px solid black; padding:0px; height:52px;margin-bottom:0;">
+
+		<img style="float:left;" src="/static/images/iitrlogo.png" alt="iitrlogo" height="250px" width="250px" >
+		<div style=" float:right;text-align:right;width:200px;padding:3px;margin-right:10px;">
+		<a href="/person/viewProfile/?id={{ user.person.id }}"><img src="/media/profile/{% if image %}{{ user.username }}{% else %}default{% endif %}" alt="User image" style="height:45px;width:45px;"" style="font-size:14px;font-color:black;	"/> <p style="margin-top: -30px;
+color: #FFF;
+font-size: 15px;
+right: 75px;
+position: absolute;">{{ user.person.name }} </p></a>
+		</div> 
+		<div style="width:500px;float:right;">
+			<a href="/person/home/"><button style="margin-left:50px;" type="submit" class="btn btn-primary">Home</button></a>
+
+			<a href="/person/viewProfile/"><button style="" type="submit" class="btn btn-primary">Profile</button></a>
+
+
+			<a href="/person/logout/"><button style="" type="submit" class="btn btn-primary" >Logout</button></a>
+		</div>
+		
+
+
+		</div>
+		
+
+		{% block app-content %}
+		{% endblock app-content %}
+
+		{% block paginator %}
+		{% endblock paginator %}
+		
+		<script type="text/javascript" src="/static/js/jquery/jquery-1.10.2.min.js"></script>
+		<script type="text/javascript" src="/static/js/jquery/jquery-1.9.1.js"></script>
+		<script type="text/javascript" src="/static/js/bootstrap/bootstrap.min.js"></script>
+		<script type="text/javascript" src="/static/js/bootstrap/bootstrap.validate.js"></script>
+		<script type="text/javascript" src="/static/js/jquery/jquery-ui.js"></script>	
+		<script src="/static/js/jquery/jquery.fancybox.pack.js"></script>	
+		<script src="/static/js/jquery/jquery.fancybox.js"></script>	
+		<script src="/static/js/jquery/jquery.leanModal.min.js"></script>
+		<script type="text/javascript">
+		$(document).ready(function(){		
+			$(".fancybox").fancybox();
+			});
+		</script>
+			
+
+		{% block script %}
+
+		{% endblock script %}
+		</body>
+		</html>

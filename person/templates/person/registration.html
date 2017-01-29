@@ -1,0 +1,44 @@
+<html>
+	<head>
+		<title>
+			SignUp - ParkIt
+		</title>
+	</head>
+	<body>
+		<h2>ParkIt</h2>
+
+		<h3>SignUp</h3>
+
+		<div>
+			<form action="" method="post">
+				{% csrf_token %}
+				<div>
+					<p> First Name </p>
+					<input name='park_first_name' id='park_first_name' type='text'/>
+				</div>
+				<div>
+					<p> Last Name </p>
+					<input name='park_last_name' id='park_last_name' type='text'/>
+				</div>
+				<div>
+					<p> Email </p>
+					<input name='park_email' id='park_email' type='email'/>
+				</div>
+				<div>
+					<p> Phone </p>
+					<input name='park_phone' id='park_phone' type='text'/>
+				</div>
+				<div>
+					<p> Password </p>
+					<input name='park_password' id='park_password' type='password'/>
+				</div>
+				<br/>
+				{% if error_message%}
+					<p><b>ERROR : {{error_message}}</b></p>
+				{% endif %}
+				<input type="submit" value="SignUp">
+			</form>	
+		</div>
+
+	</body>
+</html>

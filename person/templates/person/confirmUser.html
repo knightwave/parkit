@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block app-content %}
+	{% if errors %}
+		<p><u><b>Errors:</b></u></p>
+		{% for error in errors %}
+			{{error}}
+		{% endfor %}
+	{% endif %}
+	{% if success %}	
+		<p><u><b>Success:</b></u></p>
+		{% for s in success %}
+			{{s}}
+		{% endfor %}
+	{% endif %}
+	{% if messages %}	
+		<p><u><b>Messages:</b></u></p>
+		{% for message in messages %}
+			{{message}}
+		{% endfor %}
+	{% endif %}
+{% endblock %}
+
