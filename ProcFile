@@ -1,0 +1,2 @@
+web: gunicorn parkit.wsgi --log-file -
+

@@ -65,6 +65,10 @@ STATICFILES_DIRS = (
     '/var/www/static/',
 )
 
+PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
+STATIC_ROOT = os.path.join(PROJECT_DIR, 'static')
+
+
 MEDIA_ROOT = '/Users/knightwave/parkit/media/'
 
 MEDIAFILES_DIRS = (os.path.join(os.path.dirname(__file__),'media'),)
@@ -80,14 +84,21 @@ MEDIA_URL = '/media/'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'parkit',
         'USER': 'root',
         'PASSWORD': '',
-        'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
-        'PORT': '3306',
+        'HOST': '127.0.0.1',   # Or an IP Address that your DB is hosted on
+        'PORT': '5432',
     }
 }
+
+import dj_database_url
+db_from_env = dj_database_url.config(conn_max_age=500)
+DATABASES['default'].update(db_from_env)
+
+STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/dev/topics/i18n/
