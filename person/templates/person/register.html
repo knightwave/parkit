@@ -171,36 +171,7 @@
 	<script type="text/javascript" src="/static/js/bootstrap/bootstrap.min.js"></script>
 	<script type="text/javascript" src="/static/js/bootstrap/bootstrap.validate.js"></script>
 	<script type="text/javascript">
-	$(document).ready(function(){	
-		{% for degree in degrees %}
-			$('#degree_picker').append($('<option />').val('{{degree.name}}').html('{{degree.name}}'));
-		{% endfor %}
-		{% for branch in branches %}
-			$('#branch_picker').append($('<option />').val('{{branch.code}}').html('{{branch.name}}'));
-		{% endfor %}
-		for (i = new Date().getFullYear(); i > 1900; i--){
-			$('#yearpicker').append($('<option />').val(i).html(i));
-		}
-
-		$("#after_username").html('USERNAME'+'.'+$("#degree_picker").val().split('.').join('').toLowerCase()+'.'+$("#branch_picker").val().split('.').join('').toLowerCase()+'.'+$("#yearpicker").val()+'@iitr.edu.in');
-		/* Dynamic Username */
-		$("#degree_picker, #branch_picker, #yearpicker, #username").change(function(){
-			$("#after_username").html($("#username").val()+'.'+$("#degree_picker").val().split('.').join('').toLowerCase()+'.'+$("#branch_picker").val().split('.').join('').toLowerCase()+'.'+$("#yearpicker").val()+'@iitr.edu.in');
-		});
-		/*$("#branch_picker").change(function(){
-			$("#after_username").html($("#username").val()+$("#degree_picker").val()+$("#branch_picker").val()+$("#yearpicker").val()+'@iitr.edu.in');
-		});
-		$("#yearpicker").change(function(){
-			$("#after_username").html($("#username").val()+$("#degree_picker").val()+$("#branch_picker").val()+$("#yearpicker").val()+'@iitr.edu.in');
-		});
-		$("#username").change(function(){
-			$("#after_username").html($("#username").val()+$("#degree_picker").val()+$("#branch_picker").val()+$("#yearpicker").val()+'@iitr.edu.in');
-		});*/
-
-	/** GENDER VALUE **/
-	$('.gender-button').click(function(){
-		$('input[name=gender]').val($(this).attr('name'));	
-	});
+	$(document).ready(function(){
 
 	$("form").validate({
 		rules:{

@@ -113,15 +113,6 @@
 			    }
 			  });
 
-			$("#iitr_newsfeed a").click(function(){	
-				$.each($("#iitr_newsfeed a"), function(){
-					var temp_href=$(this).attr("href");
-					var href=temp_href;
-					if(href.substring(0,4) != "http"){
-						$(this).attr("href", "http://www.iitr.ac.in"+temp_href);
-					}	
-				});
-			});
 
 			$("#submit_button").click(function(){
 				if (!isValidPlace) {
