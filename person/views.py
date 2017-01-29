@@ -19,6 +19,7 @@ import json
 import datetime
 import random
 import os
+import requests
 
 @login_required
 def info(request):
@@ -117,6 +118,19 @@ def loginRequest(request):
 		messages.error(request, "Please enter valid details. Login Failed.")
 	return render_to_response("person/login.html",{'errors':errors,'success':success},context_instance=RequestContext(request))
 
+
+def getData(lat, lng, duration):
+	start = datetime.datetime.utcnow()
+	end = start + relativedelta(minutes=duration)
+	url = "http://api.parkwhiz.com/search/?lat={0}&lng={1}&start={2}&end={3}&key=62d882d8cfe5680004fa849286b6ce20".format(str(lat), str(lng), start.strftime("%s"), end.strftime("%s"))
+	response = requests.get(url)
+	if response.status_code != 200:
+		return {}
+
+	listings = json.loads(response.text)['parking_listings']
+	return listings
+
+
 @login_required
 def home(request):
 	persons_count = Person.objects.all().count()
@@ -130,6 +144,8 @@ def home(request):
 		location = json.loads(jsonLocation)
 		latitude = location['lat']
 		longitude = location['lng']
+
+
 
 	return render_to_response("person/home.html",
 		{
