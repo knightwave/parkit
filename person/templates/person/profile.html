@@ -36,4 +36,85 @@
 			background-color:#8EB4E3;	
 		}
 	</style>
+{% endblock %}
 
+{% block app-content %}
+	<div class="well container" style="margin-left:165px;">
+		{% if messages %}
+			<div class="messages">
+			{% for message in messages %}
+				<div{% if message.tags %} class="control-group {{ message.tags }}"{% endif %}><p class="text-{{ message.tags }}">- {{ message }}<p></div>
+			{% endfor %}
+			</div>
+		{% endif %}
+		<div class="table-responsive" style="width:700px;margin-left:100px;">
+		{% if person.activeBookings.all %}
+		<h3>Active Booking(s)</h3>
+		<table class="table">
+			<thead>
+				<th>#</th>
+				<th>Location</th>
+				<th>From</th>
+				<th>To</th>
+				<th>Cost</th>
+				<th></th>
+			</thead>
+			<tbody>
+
+				{% for booking in person.activeBookings.all %}
+					<tr>
+						<td>{{ forloop.counter }}</td>
+						<td>{{ booking.parkingSpot.address }}</td>
+						<td>{{ booking.startTime }}</td>
+						<td>{{ booking.endTime }}</td>
+						<td>$ {{ booking.cost }}</td>
+		                <td>
+		                    <form action="/person/cancelBooking/" method="post">
+		                        {% csrf_token %}
+		                        <input type="hidden" name="bookingId" value="{{ booking.id }}">
+		                        <input type="submit" class="button medium u-widthAuto" value="Cancel Booking">
+		                    </form>
+		                </td>
+					</tr>
+				{% endfor %}
+
+			</tbody>
+		</table>
+		{% else %}
+		<h3>You don't have any active bookings</h3>
+		{% endif %}
+		</div>
+
+		<br><br>
+		<div class="table-responsive" style="width:700px;margin-left:100px;">
+		{% if person.inactiveBookings.all %}
+		<h3>Previous Booking(s)</h3>
+		<table class="table">
+			<thead>
+				<th>#</th>
+				<th>Location</th>
+				<th>From</th>
+				<th>To</th>
+				<th>Cost</th>
+			</thead>
+			<tbody>
+
+				{% for booking in person.inactiveBookings.all %}
+					<tr>
+						<td>{{ forloop.counter }}</td>
+						<td>{{ booking.parkingSpot.address }}</td>
+						<td>{{ booking.startTime }}</td>
+						<td>{{ booking.endTime }}</td>
+						<td>$ {{ booking.cost }}</td>
+					</tr>
+				{% endfor %}
+
+			</tbody>
+		</table>
+		{% else %}
+		<h3>You don't have any previous bookings</h3>
+		{% endif %}
+		</div>
+
+
+{% endblock %}

@@ -46,21 +46,16 @@
 		{% endblock body %}
 		<div class="well" style="color:lightgray; font-size:20px; background-color:rgb(30,30,30); border:1px solid black; padding:0px; height:52px;margin-bottom:0;">
 
-		<img style="float:left;" src="/static/images/iitrlogo.png" alt="iitrlogo" height="250px" width="250px" >
-		<div style=" float:right;text-align:right;width:200px;padding:3px;margin-right:10px;">
-		<a href="/person/viewProfile/?id={{ user.person.id }}"><img src="/media/profile/{% if image %}{{ user.username }}{% else %}default{% endif %}" alt="User image" style="height:45px;width:45px;"" style="font-size:14px;font-color:black;	"/> <p style="margin-top: -30px;
-color: #FFF;
-font-size: 15px;
-right: 75px;
-position: absolute;">{{ user.person.name }} </p></a>
+		<div style=" float:left;text-align:left;width:200px;padding:3px;margin-left:50px; margin-top:15px;">
+			{{user.person.name}}
 		</div> 
 		<div style="width:500px;float:right;">
-			<a href="/person/home/"><button style="margin-left:50px;" type="submit" class="btn btn-primary">Home</button></a>
+			<a href="/person/home/"><button style="margin-left:50px;" type="submit" class="btn btn-primary">Make a booking</button></a>
 
-			<a href="/person/viewProfile/"><button style="" type="submit" class="btn btn-primary">Profile</button></a>
+			<a href="/person/profile/"><button style="" type="submit" class="btn btn-primary">Manage Bookings</button></a>
 
 
-			<a href="/person/logout/"><button style="" type="submit" class="btn btn-primary" >Logout</button></a>
+			<a href="/person/logout/"><button style="float:right; margin-right:30px;" type="submit" class="btn btn-primary" >Logout</button></a>
 		</div>
 		
 

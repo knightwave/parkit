@@ -32,19 +32,10 @@ def info(request):
 
 
 @login_required
-def viewProfile(request):
-	id = request.GET.get('id', None)
-	if id is not None:
-		try:		
-			person = Person.objects.get(id=id)
-		except:
-			person = request.user.person
-	else:
-		person=request.user.person
+def profile(request):
+	person = request.user.person
 
-	return render_to_response("person/viewProfile.html",{'image':False,'person':person, 'person_image':False},context_instance=RequestContext(request))
-
-
+	return render_to_response("person/profile.html",{'person': person},context_instance=RequestContext(request))
 
 def loginRequest(request):
 	errors = []
@@ -65,9 +56,10 @@ def loginRequest(request):
 	return render_to_response("person/login.html",{'errors':errors,'success':success},context_instance=RequestContext(request))
 
 def logoutRequest(request):
-	if not request.user.is_authenticated():
-		return HttpResponseRedirect('/person/login')
-	logout(request)
+	if request.user.is_authenticated():
+		logout(request)
+		messages.error(request, "Logged out!")
+
 	return HttpResponseRedirect('/person/login')
 
 
@@ -148,22 +140,25 @@ def isOccupied(location):
 		endTime__range=(startTime, endTime),
 		parkingSpot=parkingSpot,
 	)
-	location['remainingSpots'] = parkingSpot.totalSpots - currentBookings.count()
+	location['remainingSpots'] = parkingSpot.totalSpots - currentActiveBookings.count()
 	if location['remainingSpots']:  # All spots are occupied
 		return False, parkingSpot
 
 	return True, parkingSpot
 
-def checkAndCreateBooking(location):
+def checkAndCreateBooking(person, location):
 	isSpotOccupied, parkingLocation = isOccupied(location)
 	if isSpotOccupied:
 		return
 
+	startTime = datetime.datetime.fromtimestamp(int(location['start']))
+	endTime = datetime.datetime.fromtimestamp(int(location['end']))
 	return Booking.objects.create(
 		parkingSpot=parkingLocation,
-		startTime=location['start'],
-		endTime=location['end'],
-		cost=location['cost'],
+		startTime=startTime,
+		endTime=endTime,
+		cost=location['price'],
+		person=person,
 	)
 
 @login_required
@@ -202,17 +197,26 @@ def book(request):
 	if request.method == "POST":
 		jsonLocation = request.POST.get('parkingLocation', None)
 		location = json.loads(jsonLocation)
-		booking = checkAndCreateBooking(location)
+		booking = checkAndCreateBooking(request.user.person, location)
 		if not booking:
-			messages.error("There is an active booking already for this duration")
+			messages.error(request, "There is an active booking already for this duration")
 		else:
-			messages.success("Parking successfully booked at ".format(location['address']))
+			messages.success(request, "Parking successfully booked at ".format(location['address']))
 
 	return HttpResponseRedirect("/person/profile/")
 
 @login_required
-def profile(request):
-	return render_to_response("person/profile.html",{'image':image},context_instance=RequestContext(request))
+def cancelBooking(request):
+	if request.method == "POST":
+		bookingId = request.POST.get('bookingId', None)
+		booking = Booking.objects.get(id=bookingId)
+		if booking.person == request.user.person:
+			booking.isActive = False
+			booking.save()
+			messages.success(request, "Booking Cancelled!")
+
+	return HttpResponseRedirect("/person/profile/")
+
 
 @login_required
 def changePassword(request):

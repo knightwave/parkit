@@ -7,6 +7,13 @@ class Person(models.Model):
 	name = models.CharField(max_length=100)
 	contactNumber = models.CharField(max_length=20)
 
+	@property
+	def activeBookings(self):
+		return self.bookings.filter(isActive=True).order_by('-id')
+
+	@property
+	def inactiveBookings(self):
+		return self.bookings.filter(isActive=False).order_by('-id')
 
 class ParkingSpot(models.Model):
 	name = models.CharField(max_length=254)
@@ -18,7 +25,7 @@ class ParkingSpot(models.Model):
 	totalSpots = models.IntegerField(default=10)
 
 class Booking(models.Model):
-	person = models.ForeignKey(User, related_name='bookings')
+	person = models.ForeignKey(Person, related_name='bookings')
 	parkingSpot = models.ForeignKey(ParkingSpot, related_name='bookings')
 	startTime = models.DateTimeField()
 	endTime = models.DateTimeField()

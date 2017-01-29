@@ -169,6 +169,7 @@
       			'start': "{{listing.start}}",
       			'end': "{{listing.end}}",
       			'distance': "{{listing.distance}}",
+      			'remainingSpots': "{{listing.remainingSpots}}",
       		};
       		addCustomMarker(listing);
       	{% endfor %}
@@ -176,11 +177,12 @@
 
       function getContentData(place) {
 			var html = '<div><strong>' + place.address + '</strong><br><br>' +
+                'Available Spot(s) - ' + place.remainingSpots +
                 'Cost - ' + place.price_formatted + '<br>' +
                 'Distance - ' + place.distance + ' feet <br><br>' +
                 '<form action="/person/book/" method="post">' + 
                 "{% csrf_token %}" + 
-                '<input type="hidden" name="parkingLocation" value="' + JSON.stringify(place) + '">' +
+                '<input type="hidden" name="parkingLocation" value=\'' + JSON.stringify(place) + '\'>' +
                 '<button class="book">Book</button>' + 
                 '</form>' +
                 '</div>';
