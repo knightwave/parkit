@@ -57,21 +57,7 @@ position: absolute;">{{ user.person.name }} </p></a>
 		<div style="width:500px;float:right;">
 			<a href="/person/home/"><button style="margin-left:50px;" type="submit" class="btn btn-primary">Home</button></a>
 
-			<!--<button style="" type="submit" class="btn btn-primary" onclick="document.location.href='/person/profile/'" >Edit Profile</button>-->
-			<!--<button style="" type="submit" class="btn btn-primary" onclick="document.location.href='/person/changePassword/'" >Change Password</button>
-			<button style="" type="submit" class="btn btn-primary" onclick="document.location.href='/person/changeEmail/'" >Change Email</button>-->
-
 			<a href="/person/viewProfile/"><button style="" type="submit" class="btn btn-primary">Profile</button></a>
-
-			{% if user.is_superuser%}
-			<a href="/person/addUser/"><button style="" type="submit" class="btn btn-primary" >Add User</button></a>
-			{% endif %}
-
-			<a href="/person/listUsers/"><button style="" type="submit" class="btn btn-primary" >Search</button></a>
-
-			<a href="/message/all/"><button style="" type="submit" class="btn btn-primary"  >Inbox</button></a>
-			
-			<!--<img style="margin-left:20px" src="/static/images/iitrlogo_c.jpg" alt="iitrlogo" height="70px" width="70px">-->
 
 
 			<a href="/person/logout/"><button style="" type="submit" class="btn btn-primary" >Logout</button></a>

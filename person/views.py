@@ -12,6 +12,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q
 
 from models import *
+from constants import EXPECTED_DURATIONS
 
 import datetime
 import random
@@ -492,41 +493,31 @@ def logoutRequest(request):
 def register(request):
 	errors = []
 	success = []
-	if request.method == "POST" and request.session['register_post'] == 1:
+	if request.method == "POST":
 		name = request.POST.get('name', None)
-		gender = request.POST.get('gender', 'male')
-		username = request.POST.get('username', None)
-		password = request.POST.get('password', None)
+		email = request.POST.get('email', None)
 		password1 = request.POST.get('password1', None)
 		password2 = request.POST.get('password2', None)
-		email = key.email
-		branch = request.POST.get('branch', None)
-		degree = request.POST.get('degree', None)
-		graduation_year = request.POST.get('year_graduation', None)
-		username = username + '.' + degree.replace('.','').lower() + '.' + branch.replace('.','').lower() + '.' + str(graduation_year)
+		phone = request.POST.get('phone', None)
+		inputs = {
+			'name': name,
+			'email': email,
+			'phone': phone,
+		}
 		if password1 != password2:
 			messages.error(request, "The entered passwords donot match. Please enter again.")
 			return HttpResponseRedirect('/person/register/')
-		if password != request.session['password'] :
-			messages.error(request, "Wrong Key")
-			return HttpResponseRedirect('/person/register/')
 		try:
-			u = User.objects.get(username=username)
-			messages.error(request, 'Username '+username+ ' already exists. Choose another username.')
-			return HttpResponseRedirect('/person/register/')
+			u = User.objects.get(username=email, email=email)
+			messages.error(request, 'Email '+email+ ' already exists. Choose another username.')
+			return render_to_response('register.html',{'inputs': inputs},context_instance=RequestContext(request))
 		except:
-			try:
-				b = Branch.objects.get(code=branch)
-				d = Degree.objects.get(name=degree)
-			except:
-				messages.error(request, "Invalid Branch or Degree")
-				return HttpResponseRedirect('/person/register/')
-			user=User.objects.create(username=username, email=email, date_joined=datetime.date.today(), is_superuser=False)
+			user=User.objects.create(username=email, email=email)
 			user.set_password(password1)
 			user.save()
-			person=Person.objects.create(user=user, name=name)
+			person=Person.objects.create(user=user, name=name, contactNumber=phone)
 			person.save()
-			messages.success(request, 'User '+username+' created successfully!')
+			messages.success(request, 'Email ' + email + ' created successfully!')
 			return HttpResponseRedirect('/person/login/')
 	else:
 		return render_to_response('register.html',{},context_instance=RequestContext(request))
@@ -595,21 +586,7 @@ def unFlagUser(request):
 @login_required
 def home(request):
 	persons_count = Person.objects.all().count()
-	try:
-		usock = urllib.urlopen("http://www.iitr.ac.in")
-		pattern = re.compile(r'<div id="news">.*?<div class="rightbottom"',re.DOTALL)
-		newsfeed=pattern.search(usock.read()).group(0)
-		usock.close()
-		newsfeed=newsfeed[:-15]		
-	except:
-		newsfeed = "News feed unavailable"
-	try:
-		open('/home/iitrteam/public_html/media/profile/'+str(request.user.username))
-		image=True
-	except IOError as e:
-		image = False
-
-	return render_to_response("person/home.html",{'image':image,'persons_count':persons_count,'person':request.user, 'newsfeed':newsfeed},context_instance=RequestContext(request))
+	return render_to_response("person/home.html",{'EXPECTED_DURATIONS':EXPECTED_DURATIONS,'person':request.user},context_instance=RequestContext(request))
 
 
 @login_required
