@@ -20,6 +20,7 @@ import datetime
 import random
 import os
 import requests
+from dateutil.relativedelta import relativedelta
 
 @login_required
 def info(request):
@@ -121,13 +122,13 @@ def loginRequest(request):
 
 def getData(lat, lng, duration):
 	start = datetime.datetime.utcnow()
-	end = start + relativedelta(minutes=duration)
-	url = "http://api.parkwhiz.com/search/?lat={0}&lng={1}&start={2}&end={3}&key=62d882d8cfe5680004fa849286b6ce20".format(str(lat), str(lng), start.strftime("%s"), end.strftime("%s"))
+	end = start + relativedelta(minutes=int(duration))
+	url = "http://api.parkwhiz.com/search/?lat={0}&lng={1}&key=62d882d8cfe5680004fa849286b6ce20".format(str(lat), str(lng), start.strftime("%s"), end.strftime("%s"))
 	response = requests.get(url)
 	if response.status_code != 200:
 		return {}
 
-	listings = json.loads(response.text)['parking_listings']
+	listings = json.loads(response.text).get('parking_listings', {})
 	return listings
 
 
@@ -135,8 +136,9 @@ def getData(lat, lng, duration):
 def home(request):
 	persons_count = Person.objects.all().count()
 	showMap = False
-	latitude = None
-	longitude = None
+	inputData = {}
+	parkingLocations = {}
+	jsonLocation = None
 	if request.method == "POST":
 		showMap = True
 		parkingDuation = request.POST.get('parkingDuation', None)
@@ -144,16 +146,20 @@ def home(request):
 		location = json.loads(jsonLocation)
 		latitude = location['lat']
 		longitude = location['lng']
-
-
+		inputData['latitude'] = latitude
+		inputData['longitude'] = longitude
+		inputData['parkingDuration'] = parkingDuation
+		inputData['jsonLocation'] = jsonLocation
+		inputData['autoCompletePlace'] = request.POST.get('autoCompletePlace', None)
+		parkingLocations = getData(latitude, longitude, parkingDuation)
 
 	return render_to_response("person/home.html",
 		{
 			'EXPECTED_DURATIONS':EXPECTED_DURATIONS,
 			'person':request.user,
-			'latitude': latitude,
-			'longitude': longitude,
 			'showMap': showMap,
+			'parkingLocations': parkingLocations,
+			'inputData': inputData,
 		},
 		context_instance=RequestContext(request))
 

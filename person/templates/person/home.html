@@ -67,9 +67,9 @@
 				<h4>Select the destination</h4>
 			    <div id="locationField">
 			      <input id="autocomplete" placeholder="Enter your address"
-			             onFocus="geolocate()" type="text">
+			             onFocus="geolocate()" name="autoCompletePlace" type="text" value="{{inputData.autoCompletePlace}}">
 			    </div>
-			    <input type="hidden" name="jsonLocation" id="jsonLocation">
+			    <input type="hidden" name="jsonLocation" id="jsonLocation" value="{{inputData.jsonLocation}}">
 			    <div id="parkingTime" style="margin-top:60px; height:50px; margin-bottom:20px;">
 				<h4>Duration to park</h4>
 			      <select name="parkingDuation">
@@ -100,7 +100,11 @@
     async defer></script>
 
 	<script type="text/javascript">
-		var isValidPlace = false;
+		{% if inputData.autoCompletePlace %}
+			var isValidPlace = true;
+		{% else %}
+			var isValidPlace = false;
+		{% endif %}
 		$(document).ready(function(){
 			$(window).keydown(function(event){
 			    if(event.keyCode == 13) {
@@ -139,7 +143,11 @@
       var infowindow;
 
       function initMap() {
-        var givenLocation = {lat: {{latitude}}, lng: {{longitude}}};
+      	{% if inputData %}
+        	var givenLocation = {lat: {{inputData.latitude}}, lng: {{inputData.longitude}}};
+        {% else %}
+        	var givenLocation = {lat: '', lng: ''};
+        {% endif %}
         map = new google.maps.Map(document.getElementById('map'), {
           center: givenLocation,
           zoom: 15
