@@ -154,35 +154,42 @@
         });
 
         infowindow = new google.maps.InfoWindow();
-        var service = new google.maps.places.PlacesService(map);
-        service.nearbySearch({
-          location: givenLocation,
-          radius: 500,
-          type: ['store']
-        }, callback);
+        addMarkers();
+        // var service = new google.maps.places.PlacesService(map);
+        // service.nearbySearch({
+        //   location: givenLocation,
+        //   radius: 500,
+        //   type: ['store']
+        // }, callback);
       }
 
-      function callback(results, status) {
-        if (status === google.maps.places.PlacesServiceStatus.OK) {
-          for (var i = 0; i < results.length; i++) {
-            createMarker(results[i]);
-          }
-        }
+      function addMarkers() {
+      	{% for listing in parkingLocations %}
+      		var latlng = new google.maps.LatLng({{listing.lat}}, {{listing.lng}});
+      		var name = "{{listing.address}}";
+      		console.log(name);
+      		addCustomMarker(latlng, name);
+      	{% endfor %}
       }
 
-      function createMarker(place) {
-        var placeLoc = place.geometry.location;
-        var marker = new google.maps.Marker({
+      function getContentData(place) {
+			var html = '<div><strong>' + place.name + '</strong><br>' +
+                'Place ID: ' + place.place_id + '<br>' +
+                place.formatted_address + '</div>';
+      }
+
+      function addCustomMarker(latlng, name) {
+         var marker = new google.maps.Marker({
           map: map,
-          position: place.geometry.location
+          position: latlng,
         });
 
         google.maps.event.addListener(marker, 'click', function() {
-          infowindow.setContent(place.name);
+          infowindow.setContent(name);
           infowindow.open(map, this);
         });
+     	
       }
-   
 
       var placeSearch, autocomplete, place;
       var componentForm = {
